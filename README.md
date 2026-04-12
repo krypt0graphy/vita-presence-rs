@@ -10,6 +10,10 @@ It adds automatic images for official Vita, PSP, and PS1 games rather than uploa
 
 ## Download
 - [Latest Release](https://github.com/krypt0graphy/vita-presence-rs/releases/latest)
+- [Crates.io](https://crates.io/crates/vita-presence-rs) 
+```bash
+cargo install vita-presence-rs
+```
 
 ## Instructions
 1. Install [the kernel plugin](https://github.com/Electry/VitaPresence) on your Vita
