@@ -2,6 +2,8 @@
 ![GitHub License](https://img.shields.io/github/license/krypt0graphy/vita-presence-rs)
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/krypt0graphy/vita-presence-rs/latest/total)
 ![Crates.io Downloads (latest version)](https://img.shields.io/crates/dv/vita-presence-rs)
+![AUR Version](https://img.shields.io/aur/version/vita-presence-rs)
+
 
 ![screenshot](images/screenshot.png)
 
@@ -13,6 +15,14 @@ It adds automatic images for official Vita, PSP, and PS1 games rather than uploa
 - [Crates.io](https://crates.io/crates/vita-presence-rs) 
 ```bash
 cargo install vita-presence-rs
+```
+- [AUR](https://aur.archlinux.org/packages/vita-presence-rs)
+```bash
+yay -S vita-presence-rs
+```
+- [AUR Prebuilt](https://aur.archlinux.org/packages/vita-presence-rs-bin)
+```bash
+yay -S vita-presence-rs-bin
 ```
 
 ## Instructions
