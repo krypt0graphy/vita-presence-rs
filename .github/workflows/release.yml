@@ -14,10 +14,13 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact: vita-presence-rs
+            artifact_name: vita-presence-rs-linux
           - os: macos-latest
             artifact: vita-presence-rs
+            artifact_name: vita-presence-rs-macos
           - os: windows-latest
             artifact: vita-presence-rs.exe
+            artifact_name: vita-presence-rs-windows.exe
 
     steps:
       - uses: actions/checkout@v4
@@ -28,11 +31,15 @@ jobs:
       - name: Build
         run: cargo build --release
 
+      - name: Rename artifact
+        shell: bash
+        run: mv target/release/${{ matrix.artifact }} target/release/${{ matrix.artifact_name }}
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vita-presence-rs-${{ matrix.os }}
-          path: target/release/${{ matrix.artifact }}
+          name: ${{ matrix.artifact_name }}
+          path: target/release/${{ matrix.artifact_name }}
 
   release:
     name: Create Release
@@ -40,24 +47,27 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: artifacts
 
       - name: Generate checksums
         run: |
-          sha256sum vita-presence-rs-ubuntu-latest/vita-presence-rs > checksums.txt
-          sha256sum vita-presence-rs-macos-latest/vita-presence-rs >> checksums.txt
-          sha256sum vita-presence-rs-windows-latest/vita-presence-rs.exe >> checksums.txt
+          cd artifacts
+          sha256sum vita-presence-rs-linux vita-presence-rs-macos vita-presence-rs-windows.exe > checksums.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            vita-presence-rs-ubuntu-latest/vita-presence-rs
-            vita-presence-rs-macos-latest/vita-presence-rs
-            vita-presence-rs-windows-latest/vita-presence-rs.exe
-            checksums.txt
+            artifacts/vita-presence-rs-linux
+            artifacts/vita-presence-rs-macos
+            artifacts/vita-presence-rs-windows.exe
+            artifacts/checksums.txt
           generate_release_notes: true
