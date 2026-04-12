@@ -6,6 +6,7 @@
 ![screenshot](images/screenshot.png)
 
 This is a client for the [VitaPresence](https://github.com/Electry/VitaPresence) PS Vita kernel plugin, based on [vita-presence-the-server](https://github.com/TheMightyV/vita-presence-the-server)
+
 It adds automatic images for official Vita, PSP, and PS1 games rather than uploading manually like on vita-presence-the-server.
 
 ## Download
