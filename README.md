@@ -1,7 +1,7 @@
 # vita-presence-rs
 ![GitHub License](https://img.shields.io/github/license/krypt0graphy/vita-presence-rs)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/krypt0graphy/vita-presence-rs/total)
-
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/krypt0graphy/vita-presence-rs/latest/total)
+![Crates.io Downloads (latest version)](https://img.shields.io/crates/dv/vita-presence-rs)
 
 ![screenshot](images/screenshot.png)
 

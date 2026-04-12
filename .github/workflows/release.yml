@@ -14,7 +14,7 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact: vita-presence-rs
-            artifact_name: vita-presence-rs-linux
+            artifact_name: vita-presence-rs
           - os: macos-latest
             artifact: vita-presence-rs
             artifact_name: vita-presence-rs-macos
@@ -60,13 +60,13 @@ jobs:
       - name: Generate checksums
         run: |
           cd artifacts
-          sha256sum vita-presence-rs-linux vita-presence-rs-macos vita-presence-rs-windows.exe > checksums.txt
+          sha256sum vita-presence-rs vita-presence-rs-macos vita-presence-rs-windows.exe > checksums.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/vita-presence-rs-linux
+            artifacts/vita-presence-rs
             artifacts/vita-presence-rs-macos
             artifacts/vita-presence-rs-windows.exe
             artifacts/checksums.txt
