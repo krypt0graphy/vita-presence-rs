@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: vita-presence-rs
+          - os: macos-latest
+            artifact: vita-presence-rs
+          - os: windows-latest
+            artifact: vita-presence-rs.exe
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vita-presence-rs-${{ matrix.os }}
+          path: target/release/${{ matrix.artifact }}
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate checksums
+        run: |
+          sha256sum vita-presence-rs-ubuntu-latest/vita-presence-rs > checksums.txt
+          sha256sum vita-presence-rs-macos-latest/vita-presence-rs >> checksums.txt
+          sha256sum vita-presence-rs-windows-latest/vita-presence-rs.exe >> checksums.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            vita-presence-rs-ubuntu-latest/vita-presence-rs
+            vita-presence-rs-macos-latest/vita-presence-rs
+            vita-presence-rs-windows-latest/vita-presence-rs.exe
+            checksums.txt
+          generate_release_notes: true
