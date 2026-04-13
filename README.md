@@ -9,7 +9,7 @@
 
 This is a client for the [VitaPresence](https://github.com/Electry/VitaPresence) PS Vita kernel plugin, based on [vita-presence-the-server](https://github.com/TheMightyV/vita-presence-the-server)
 
-It adds automatic images for official Vita, PSP, and PS1 games rather than uploading manually like on vita-presence-the-server.
+It adds automatic images for official Vita, PSP, and PS1 games using the PS store chihiro API for PSV and the HexFlow covers repo for PSP and PS1 rather than uploading manually like on vita-presence-the-server.
 
 ## Download
 - [Latest Release](https://github.com/krypt0graphy/vita-presence-rs/releases/latest)
