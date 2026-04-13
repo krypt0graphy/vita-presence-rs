@@ -7,9 +7,13 @@
 
 ![screenshot](images/screenshot.png)
 
-This is a client for the [VitaPresence](https://github.com/Electry/VitaPresence) PS Vita kernel plugin, based on [vita-presence-the-server](https://github.com/TheMightyV/vita-presence-the-server)
+This is a client for the [VitaPresence](https://github.com/Electry/VitaPresence) PS Vita kernel plugin
 
-It adds automatic images for official Vita, PSP, and PS1 games using the PS store chihiro API for PSV and the HexFlow covers repo for PSP and PS1 rather than uploading manually like on vita-presence-the-server.
+It works with the [original by @Electry](https://github.com/Electry/VitaPresence) and [@IruzzArcana's fork](https://github.com/IruzzArcana/VitaPresence) which adds native image support to the plugin
+
+If you are using Electry's version the images are fetched from the Playstation Store Chihiro API, or the [HexFlow covers Repository](https://github.com/Andiweli/HexFlow-Covers)
+
+If you are using IruzzArcana's version the images are fetched directly from the console
 
 ## Download
 - [Latest Release](https://github.com/krypt0graphy/vita-presence-rs/releases/latest)
@@ -27,7 +31,10 @@ yay -S vita-presence-rs-bin
 ```
 
 ## Instructions
-1. Install [the kernel plugin](https://github.com/Electry/VitaPresence) on your Vita
+1. Install the kernel plugin on your Vita
+
+    I recommend using [@IruzzArcana's version](https://github.com/IruzzArcana/VitaPresence) but it works with the [original from @Electry](https://github.com/Electry/VitaPresence) as well, if you installed from AutoPlugin II it will be the original 
+    ***Be sure to turn on the config option if you are using the first one***
 
 2. Create an application on the [Discord Developer Portal](https://discord.com/developers/home) name it something like PS Vita, this will show on your profile as "**Playing *PS Vita*** and copy the Application ID
 
@@ -42,7 +49,8 @@ yay -S vita-presence-rs-bin
     "client_id": "YOUR_DISCORD_APP_ID",
     "default_image": "https://gmedia.playstation.com/is/image/SIEPDC/ps-logo-favicon?$icon-196-196--t$",
     "show_live_area": false,
-    "refresh_interval": 5
+    "refresh_interval": 5,
+    "use_iruzzarcana_fork": false 
 }
 ```
 
@@ -53,6 +61,9 @@ yay -S vita-presence-rs-bin
 | `default_image` | Image URL shown when no game image is found, system and homebrew apps and the live area if that is enabled |
 | `show_live_area` | Show presence when on the Vita home screen |
 | `refresh_interval` | How often to poll the Vita in seconds |
+| `use_iruzzarcana_fork` | Whether you are using [IruzzArcana's fork of the VitaPresence plugin](https://github.com/IruzzArcana/VitaPresence) on your Vita |
+
+### Only make the last option true if this version of the plugin is installed on your PS Vita, it will not work otherwise
 
 4. Run it
 
@@ -71,5 +82,6 @@ Binary will be at `target/release/vita-presence-rs` (or `vita-presence-rs.exe` o
 
 ## Credits
 - [Electry](https://github.com/Electry) for VitaPresence
-- [TheMightyV](https://github.com/TheMightyV) for vita-presence-the-server
+- [IruzzArcana](https://github.com/IruzzArcana) for their fork of VitaPresence
 - [Andiweli](https://github.com/Andiweli) for the HexFlow covers repository
+- [TheMightyV](https://github.com/TheMightyV) for vita-presence-the-server
