@@ -187,9 +187,10 @@ fn get_image_url(
     }
 
     if let Some((region, content_id)) = tsv.get(titleid) {
+        let lang = if region == "JP" { "ja" } else { "en" };
         return format!(
-            "https://store.playstation.com/store/api/chihiro/00_09_000/container/{}/en/19/{}/image?w=248&h=248",
-            region, content_id
+            "https://store.playstation.com/store/api/chihiro/00_09_000/container/{}/{}/19/{}/image?w=248&h=248",
+            region, lang, content_id
         );
     }
 

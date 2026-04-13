@@ -1,6 +1,6 @@
 [package]
 name = "vita-presence-rs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Client for the VitaPresence PS Vita Plugin by Electry"
 repository = "https://github.com/krypt0graphy/vita-presence-rs"
