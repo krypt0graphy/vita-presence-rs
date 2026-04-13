@@ -33,7 +33,8 @@ yay -S vita-presence-rs-bin
 ## Instructions
 1. Install the kernel plugin on your Vita
 
-    I recommend using [@IruzzArcana's version](https://github.com/IruzzArcana/VitaPresence) but it works with the [original from @Electry](https://github.com/Electry/VitaPresence) as well, if you installed from AutoPlugin II it will be the original 
+    I recommend using [@IruzzArcana's version](https://github.com/IruzzArcana/VitaPresence) but it works with the [original from @Electry](https://github.com/Electry/VitaPresence) as well, if you installed from AutoPlugin II it will be the original
+
     ***Be sure to turn on the config option if you are using the first one***
 
 2. Create an application on the [Discord Developer Portal](https://discord.com/developers/home) name it something like PS Vita, this will show on your profile as "**Playing *PS Vita*** and copy the Application ID
