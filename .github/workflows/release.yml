@@ -70,4 +70,4 @@ jobs:
             artifacts/vita-presence-rs-macos
             artifacts/vita-presence-rs-windows.exe
             artifacts/checksums.txt
-          generate_release_notes: true
+          body_path: CHANGELOG.md

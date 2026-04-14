@@ -39,11 +39,13 @@ yay -S vita-presence-rs-bin
 
 2. Create an application on the [Discord Developer Portal](https://discord.com/developers/home) name it something like PS Vita, this will show on your profile as "**Playing *PS Vita*** and copy the Application ID
 
-3. Configure the app — run it once to generate an example config at:
+3. Configure the app at:
    - **Linux:** `~/.config/vita-presence-rs/config.json`
    - **Mac:** `~/Library/Application Support/vita-presence-rs/config.json`
    - **Windows:** `%APPDATA%\vita-presence-rs\config.json`
-
+    
+    You can run it once to generate a default config
+    
 ```json
 {
     "ip": "YOUR_VITA_IP",
