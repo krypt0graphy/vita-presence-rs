@@ -61,7 +61,7 @@ yay -S vita-presence-rs-bin
 |-------|-------------|
 | `ip` | Your Vita's local IP address |
 | `client_id` | Your Discord application ID |
-| `default_image` | Image URL shown when no game image is found, system and homebrew apps and the live area if that is enabled |
+| `default_image` | Image URL shown when no game image is found, some apps (including homebrew apps if using Electry's version) and the live area if that is enabled |
 | `show_live_area` | Show presence when on the Vita home screen |
 | `refresh_interval` | How often to poll the Vita in seconds |
 | `use_iruzzarcana_fork` | Whether you are using [IruzzArcana's fork of the VitaPresence plugin](https://github.com/IruzzArcana/VitaPresence) on your Vita |
