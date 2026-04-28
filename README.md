@@ -13,7 +13,7 @@ It works with the [original by @Electry](https://github.com/Electry/VitaPresence
 
 If you are using Electry's version the images are fetched from the Playstation Store Chihiro API, or the [HexFlow covers Repository](https://github.com/Andiweli/HexFlow-Covers)
 
-If you are using IruzzArcana's version the images are fetched directly from the console
+If you are using IruzzArcana's version the images are fetched directly from the console, and will match the icons in the Live Area
 
 ## Download
 - [Latest Release](https://github.com/krypt0graphy/vita-presence-rs/releases/latest)
@@ -33,7 +33,7 @@ yay -S vita-presence-rs-bin
 ## Instructions
 1. Install the kernel plugin on your Vita
 
-    I recommend using [@IruzzArcana's version](https://github.com/IruzzArcana/VitaPresence) but it works with the [original from @Electry](https://github.com/Electry/VitaPresence) as well, if you installed from AutoPlugin II it will be the original
+    I recommend using [IruzzArcana's version](https://github.com/IruzzArcana/VitaPresence) but it works with the [original from Electry](https://github.com/Electry/VitaPresence) as well, if you installed from AutoPlugin II it will be the original
 
     ***Be sure to turn on the config option if you are using the first one***
 
@@ -45,7 +45,7 @@ yay -S vita-presence-rs-bin
    - **Windows:** `%APPDATA%\vita-presence-rs\config.json`
     
     You can run it once to generate a default config
-    
+
 ```json
 {
     "ip": "YOUR_VITA_IP",

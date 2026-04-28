@@ -228,6 +228,14 @@ pub fn get_image(
         Ok(r) => r,
     };
 
+    if !image_response.status().is_success() {
+        log::warn!(
+            "[VITA] Vita returned non-success status fetching image: {}",
+            image_response.status()
+        );
+        return get_chihiro_url(&titleid.to_uppercase(), tsv, default_img);
+    }
+
     let image_bytes = match image_response.bytes() {
         Err(e) => {
             log::warn!("[VITA] Failed to read image bytes: {}", e);
@@ -244,25 +252,36 @@ pub fn get_image(
             Part::bytes(image_bytes).file_name(format!("{}.png", titleid)),
         );
 
-    match client
+    let response = match client
         .post("https://litterbox.catbox.moe/resources/internals/api.php")
         .multipart(litterbox_form)
         .send()
     {
         Err(e) => {
             log::warn!("[VITA] Failed to upload to Litterbox: {}", e);
-            get_chihiro_url(&titleid.to_uppercase(), tsv, default_img)
+            return get_chihiro_url(&titleid.to_uppercase(), tsv, default_img);
         }
-        Ok(r) => match r.text() {
-            Err(e) => {
-                log::warn!("[VITA] Failed to read Litterbox response: {}", e);
-                get_chihiro_url(&titleid.to_uppercase(), tsv, default_img)
-            }
-            Ok(t) => {
-                let url = t.trim().to_string();
-                insert_litterbox_cache(image_cache, cache_path, titleid, &url);
-                url
-            }
-        },
+        Ok(r) => r,
+    };
+
+    let status = response.status();
+    let body = match response.text() {
+        Err(e) => {
+            log::warn!("[VITA] Failed to read Litterbox response: {}", e);
+            return get_chihiro_url(&titleid.to_uppercase(), tsv, default_img);
+        }
+        Ok(t) => t.trim().to_string(),
+    };
+
+    if !status.is_success() || !body.starts_with("https://") {
+        log::warn!(
+            "[VITA] Litterbox upload failed (status {}): {}",
+            status,
+            body.chars().take(200).collect::<String>()
+        );
+        return get_chihiro_url(&titleid.to_uppercase(), tsv, default_img);
     }
+
+    insert_litterbox_cache(image_cache, cache_path, titleid, &body);
+    body
 }
