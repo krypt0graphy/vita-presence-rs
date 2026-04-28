@@ -1,1 +1,1 @@
-- Add support for @IruzzArcana's fork using HTTP requests instead of TCP
+- Add fallback to chihiro when litterbox error 500's
