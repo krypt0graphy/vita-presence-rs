@@ -1,1 +1,1 @@
-- Add fallback to chihiro when litterbox error 500's
+- Fix Discord activity not being cleared when the Vita is unreachable

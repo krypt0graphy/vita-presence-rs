@@ -55,6 +55,10 @@ pub fn discord_client(
                     log::warn!("[DISCORD] Failed to clear activity: {}", e);
                 }
             }
+        } else {
+            if let Err(e) = client.clear_activity() {
+                log::warn!("[DISCORD] Failed to clear activity: {}", e);
+            }
         }
         sleep(refresh);
     }
