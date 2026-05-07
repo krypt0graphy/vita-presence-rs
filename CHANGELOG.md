@@ -1,1 +1,3 @@
-- Fix Discord activity not being cleared when the Vita is unreachable
+- Add version checker
+- Make the log cleaner
+- Some bug fixes
