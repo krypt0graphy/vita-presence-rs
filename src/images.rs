@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs, path::Path};
+use std::{collections::HashMap, fs, path::Path, time::Duration};
 
 use reqwest::blocking::{
     Client,
@@ -160,28 +160,36 @@ pub fn get_chihiro_url(
     default_img.to_string()
 }
 
-pub fn get_tsv(cache_path: &Path, url: &str) -> HashMap<String, (String, String)> {
-    let tsv = if cache_path.exists() {
-        fs::read_to_string(cache_path).unwrap()
-    } else {
-        log::info!("Fetching game database...");
-        let text = match reqwest::blocking::get(url) {
-            Ok(r) => match r.text() {
-                Ok(t) => t,
-                Err(e) => {
-                    log::error!("Failed to read TSV response: {}", e);
-                    std::process::exit(1);
-                }
-            },
+pub fn fetch_tsv(cache_path: &Path, url: &str) -> String {
+    let client = Client::builder()
+        .timeout(Duration::from_secs(30))
+        .build()
+        .expect("Failed to create HTTP client");
+    log::info!("Fetching game database...");
+
+    let text = match client.get(url).send() {
+        Ok(r) => match r.text() {
+            Ok(t) => t,
             Err(e) => {
-                log::error!("Failed to fetch game database: {}", e);
+                log::error!("Failed to read TSV response: {}", e);
                 std::process::exit(1);
             }
-        };
+        },
+        Err(e) => {
+            log::error!("Failed to fetch game database: {}", e);
+            std::process::exit(1);
+        }
+    };
 
-        fs::create_dir_all(cache_path.parent().unwrap()).unwrap();
-        fs::write(cache_path, &text).unwrap();
-        text
+    fs::create_dir_all(cache_path.parent().unwrap()).unwrap();
+    fs::write(cache_path, &text).unwrap();
+    text
+}
+
+pub fn get_tsv(cache_path: &Path, url: &str) -> HashMap<String, (String, String)> {
+    let tsv = match fs::read_to_string(cache_path) {
+        Ok(s) if !s.is_empty() => s,
+        _ => fetch_tsv(cache_path, url),
     };
 
     parse_tsv(&tsv)

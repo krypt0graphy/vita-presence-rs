@@ -1,7 +1,7 @@
 use std::{
     collections::HashMap,
     io::Read,
-    net::{IpAddr, TcpStream},
+    net::{IpAddr, SocketAddr, TcpStream},
     path::PathBuf,
     sync::{
         Arc, Mutex,
@@ -35,8 +35,10 @@ pub fn vita_client(
         String::from_utf8_lossy(&data[..len]).to_string()
     };
 
+    let addr = SocketAddr::new(ip, 0xCAFE);
+
     while running.load(Ordering::SeqCst) {
-        let mut stream = match TcpStream::connect((ip, 0xCAFE)) {
+        let mut stream = match TcpStream::connect_timeout(&addr, refresh) {
             Ok(s) => {
                 fail_count = 0;
                 s
@@ -54,7 +56,7 @@ pub fn vita_client(
             }
         };
 
-        if let Err(e) = stream.set_read_timeout(Some(Duration::new(5, 0))) {
+        if let Err(e) = stream.set_read_timeout(Some(Duration::from_secs(5))) {
             log::warn!("[VITA] Error when setting read time out: {}", e);
             sleep(refresh);
             continue;
@@ -74,6 +76,7 @@ pub fn vita_client(
 
         if game_raw.magic != 0xCAFECAFE {
             log::warn!("[VITA] Invalid packet");
+            sleep(refresh);
             continue;
         }
 
@@ -88,9 +91,12 @@ pub fn vita_client(
 
         let mut game_lock = game_data.lock().unwrap();
 
-        let image_url = match game_lock.as_ref() {
-            Some(g) if g.titleid == titleid => g.image_url.clone(),
-            _ => get_chihiro_url(&titleid.to_uppercase(), &tsv, &default_img),
+        let same = matches!(game_lock.as_ref(), Some(g) if g.titleid == titleid);
+
+        let image_url = if same {
+            game_lock.as_ref().unwrap().image_url.clone()
+        } else {
+            get_chihiro_url(&titleid.to_uppercase(), &tsv, &default_img)
         };
 
         let game: Game = Game {
@@ -99,9 +105,11 @@ pub fn vita_client(
             image_url,
         };
 
-        log::info!("[VITA] Game ID: {}", game.titleid);
-        log::info!("[VITA] Game: {}", game.title);
-        log::info!("[VITA] Image: {}", game.image_url);
+        if !same {
+            log::info!("[VITA] Game ID: {}", game.titleid);
+            log::info!("[VITA] Game: {}", game.title);
+            log::info!("[VITA] Image: {}", game.image_url);
+        }
 
         *game_lock = Some(game);
 
@@ -125,11 +133,23 @@ pub fn vita_client_http(
 
     let mut image_cache = load_litterbox_cache(&cache_path);
 
-    let client = Client::new();
+    let client = Client::builder()
+        .timeout(refresh)
+        .connect_timeout(refresh)
+        .build()
+        .expect("Failed to create HTTP poll client");
+
+    let image_client = Client::builder()
+        .connect_timeout(Duration::from_secs(10))
+        .timeout(Duration::from_secs(30))
+        .build()
+        .expect("Failed to create HTTP image upload client");
+
+    let url = format!("http://{}:51966", ip);
+    let p_selector = Selector::parse("p").unwrap();
+    let img_selector = Selector::parse("img").unwrap();
 
     while running.load(Ordering::SeqCst) {
-        let url = format!("http://{}:51966", ip);
-
         let response = match client.get(&url).send() {
             Ok(r) => r,
             Err(e) => {
@@ -148,6 +168,7 @@ pub fn vita_client_http(
         let data = match response.text() {
             Ok(t) => t.trim_matches(char::from(0)).to_string(),
             Err(e) => {
+                fail_count += 1;
                 log::warn!("[VITA] Failed to read: {}", e);
                 sleep(refresh);
                 continue;
@@ -155,9 +176,6 @@ pub fn vita_client_http(
         };
 
         let doc = Html::parse_document(&data);
-
-        let p_selector = Selector::parse("p").unwrap();
-        let img_selector = Selector::parse("img").unwrap();
 
         let mut p_tags = doc.select(&p_selector);
 
@@ -186,6 +204,7 @@ pub fn vita_client_http(
                     image_url,
                 });
                 sleep(refresh);
+                fail_count = 0;
                 continue;
             }
         };
@@ -204,11 +223,12 @@ pub fn vita_client_http(
 
         let game_lock = game_data.lock().unwrap();
 
-        let image_url = if game_lock
+        let same = game_lock
             .as_ref()
             .map(|g| g.titleid == titleid)
-            .unwrap_or(false)
-        {
+            .unwrap_or(false);
+
+        let image_url = if same {
             let url = game_lock.as_ref().unwrap().image_url.clone();
             drop(game_lock);
             url
@@ -221,7 +241,7 @@ pub fn vita_client_http(
                 &default_img,
                 &mut image_cache,
                 &cache_path,
-                &client,
+                &image_client,
             )
         };
 
@@ -233,9 +253,11 @@ pub fn vita_client_http(
             image_url,
         };
 
-        log::info!("[VITA] Game ID: {}", game.titleid);
-        log::info!("[VITA] Game: {}", game.title);
-        log::info!("[VITA] Image: {}", game.image_url);
+        if !same {
+            log::info!("[VITA] Game ID: {}", game.titleid);
+            log::info!("[VITA] Game: {}", game.title);
+            log::info!("[VITA] Image: {}", game.image_url);
+        }
 
         *game_lock = Some(game);
 

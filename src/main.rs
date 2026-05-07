@@ -1,5 +1,6 @@
 mod discord;
 mod images;
+mod version;
 mod vita;
 
 use std::fs;
@@ -66,11 +67,19 @@ fn get_config(config_path: &Path) -> Config {
     }
 
     let json = fs::read_to_string(config_path).unwrap();
-    from_str::<Config>(&json).unwrap()
+    match from_str::<Config>(&json) {
+        Ok(c) => c,
+        Err(e) => {
+            log::error!("Config file is invalid: {}", e);
+            log::error!("Please fix it at {}", &config_path.display());
+            std::process::exit(0);
+        }
+    }
 }
 
 fn main() {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+    version::log_version();
 
     let config_path = dirs::config_dir()
         .unwrap()
